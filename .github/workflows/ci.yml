@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-dotnet@v4
 
       - name: Update CSharpier locally
-        run: dotnet tool upadet csharpier
+        run: dotnet tool update csharpier
 
       - name: Run CSharpier Linter Action (real CSharpier installed)
         uses: ./
