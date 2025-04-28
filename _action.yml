@@ -1,0 +1,4 @@
+theme: jekyll-theme-cayman
+title: '🎯 A reusable GitHub Action to automatically check and enforce C# code formatting using CSharpier.'
+description: 'A GitHub Action to automatically check and enforce C# code formatting using CSharpier. This action helps maintain clean code by running formatting checks and posting annotations, job summaries, and PR comments when issues are detected.'
+show_downloads: true
