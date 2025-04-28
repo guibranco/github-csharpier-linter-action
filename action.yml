@@ -68,7 +68,7 @@ runs:
           exit 1
         fi
 
-    - name: CSharpier format check      
+    - name: CSharpier format check
       id: csharpier
       shell: bash
       run: |
