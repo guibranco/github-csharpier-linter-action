@@ -5,6 +5,7 @@
 [![GitHub repo](https://img.shields.io/badge/GitHub-guibranco%2Fgithub--csharpier--linter--action-green.svg?style=flat-square&logo=github)](https://github.com/guibranco/github-csharpier-linter-action)
 [![GitHub last commit](https://img.shields.io/github/last-commit/guibranco/github-csharpier-linter-action?color=green&logo=github&style=flat-square&label=Last%20commit)](https://github.com/guibranco/github-csharpier-linter-action)
 [![GitHub license](https://img.shields.io/github/license/guibranco/github-csharpier-linter-action?color=green&logo=github&style=flat-square&label=License)](https://github.com/guibranco/github-csharpier-linter-action)
+![CI](https://github.com/guibranco/github-csharpier-linter-action/actions/workflows/ci.yml/badge.svg)
 [![wakatime](https://wakatime.com/badge/github/guibranco/github-csharpier-linter-action.svg)](https://wakatime.com/badge/github/guibranco/github-csharpier-linter-action)
 
 </div>
