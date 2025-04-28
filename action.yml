@@ -14,9 +14,11 @@ runs:
       uses: actions/setup-dotnet@v4
 
     - name: Dotnet tool restore
+      shell: bash
       run: dotnet tool restore
 
-    - name: Ensure CSharpier is installed and correct version
+    - name: Ensure CSharpier is installed and the correct version
+      shell: bash
       run: |
         set -e
 
@@ -68,6 +70,7 @@ runs:
 
     - name: CSharpier format check
       id: csharpier
+      shell: bash
       run: |
         output=$(dotnet csharpier . --check || true)
         echo "$output" > csharpier-output.txt
