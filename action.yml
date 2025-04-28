@@ -8,15 +8,19 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout repository
+      shell: bash
       uses: actions/checkout@v4
 
     - name: Setup .NET
+      shell: bash
       uses: actions/setup-dotnet@v4
 
     - name: Dotnet tool restore
+      shell: bash
       run: dotnet tool restore
 
-    - name: Ensure CSharpier is installed and correct version
+    - name: Ensure CSharpier is installed and the correct version
+      shell: bash
       run: |
         set -e
 
@@ -67,6 +71,7 @@ runs:
         fi
 
     - name: CSharpier format check
+      shell: bash
       id: csharpier
       run: |
         output=$(dotnet csharpier . --check || true)
@@ -107,6 +112,7 @@ runs:
     - name: Find existing comment
       if: env.issues_detected == 'true'
       id: find-comment
+      shell: bash
       uses: peter-evans/find-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -115,6 +121,7 @@ runs:
 
     - name: Create or update PR comment
       if: env.issues_detected == 'true'
+      shell: bash
       uses: peter-evans/create-or-update-comment@v4
       with:
         issue-number: ${{ github.event.pull_request.number }}
