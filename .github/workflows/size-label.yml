@@ -2,8 +2,8 @@ name: Label based on PR size
 
 on:
   workflow_dispatch:
-  pull_request:
-
+  pull_request_target:
+    types: [opened, reopened, synchronize]
 jobs:
   size-label:
     runs-on: ubuntu-latest
