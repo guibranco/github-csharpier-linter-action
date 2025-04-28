@@ -22,18 +22,16 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test lock acquire
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+
+      - name: Install CSharpier locally
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install csharpier
+
+      - name: Run CSharpier Linter Action (real CSharpier installed)
         uses: ./
-        with:
-          lock-name: test-lock
-
-      - run: echo "Holding the lock..."
-
-      - name: Release lock
-        if: always()
-        uses: ./release-lock/
-        with:
-          lock-name: test-lock
 
   create-release:
     name: Create release
