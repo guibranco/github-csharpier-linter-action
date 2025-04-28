@@ -12,7 +12,6 @@ permissions:
   contents: write
 
 jobs:
-jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
