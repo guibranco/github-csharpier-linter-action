@@ -122,5 +122,6 @@ runs:
 
     - name: Fail if formatting issues are found
       if: env.issues_detected == 'true'
+      shell: bash
       run: exit 1
 
