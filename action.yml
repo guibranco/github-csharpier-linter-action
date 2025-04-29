@@ -22,34 +22,28 @@ runs:
       run: |
         set -e
 
-        # Check if csharpier is available
         if ! dotnet csharpier --version &> /dev/null; then
           echo "❌ Error: CSharpier must be installed as a dotnet tool in the repository."
           exit 1
         fi
 
-        # Get installed version
         installed_version=$(dotnet csharpier --version)
         required_version="1.0.1"
 
         echo "✅ Detected CSharpier version: $installed_version"
 
-        # Function to compare versions
         version_gte() {
-          # returns true if $1 >= $2
           [ "$1" = "$2" ] && return 0
 
           local IFS=.
           local i ver1=($1) ver2=($2)
 
-          # Fill empty fields in ver1 with zeros
           for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
             ver1[i]=0
           done
 
           for ((i=0; i<${#ver1[@]}; i++)); do
             if [[ -z ${ver2[i]} ]]; then
-              # fill empty fields in ver2 with zeros
               ver2[i]=0
             fi
             if ((10#${ver1[i]} > 10#${ver2[i]})); then
@@ -62,7 +56,6 @@ runs:
           return 0
         }
 
-        # Compare versions
         if ! version_gte "$installed_version" "$required_version"; then
           echo "❌ Error: CSharpier version must be >= $required_version. Found $installed_version."
           exit 1
@@ -100,14 +93,16 @@ runs:
           fi
         done <<< "$output"
 
-        if grep -q '^Error ' csharpier-output.txt; then
-          echo "" >> "$summary_file"
-          echo "⚡ Please run \`dotnet csharpier .\` locally to fix the formatting issues." >> "$summary_file"
-          cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
-          echo "issues_detected=true" >> $GITHUB_ENV
-        else
+        if ! grep -q '^Error ' csharpier-output.txt; then
           echo "issues_detected=false" >> $GITHUB_ENV
+          exit 0
         fi
+        
+        echo "" >> "$summary_file"
+        echo "⚡ Please run \`dotnet csharpier .\` locally to fix the formatting issues." >> "$summary_file"
+        cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
+        echo "issues_detected=true" >> $GITHUB_ENV
+        exit 1
 
     - name: Find existing comment
       if: env.issues_detected == 'true'

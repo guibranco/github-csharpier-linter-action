@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: CSharpier Linter
-        uses: guibranco/github-csharpier-linter-action@v1.0.1
+        uses: guibranco/github-csharpier-linter-action@v1.0.4
 ```
 
 ## ⚡ Requirements
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: CSharpier Linter
-        uses: guibranco/github-csharpier-linter-action@v1.0.1
+        uses: guibranco/github-csharpier-linter-action@v1.0.4
 ```
 
 ## 🔧 How It Works
