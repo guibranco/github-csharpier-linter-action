@@ -67,7 +67,7 @@ runs:
       run: |
         set -e
 
-        output=$(dotnet csharpier check . || true)
+        output=$(dotnet csharpier check . 2>&1 || true)
         echo "$output" > csharpier-output.txt
 
         echo "$output"
@@ -75,7 +75,6 @@ runs:
         current_file=""
         current_line="1"
 
-        # Create a temp file for the summary
         summary_file="csharpier-summary.md"
         echo "## 🔥 Formatting issues detected" > "$summary_file"
         echo "" >> "$summary_file"
@@ -102,7 +101,6 @@ runs:
         echo "⚡ Please run \`dotnet csharpier .\` locally to fix the formatting issues." >> "$summary_file"
         cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
         echo "issues_detected=true" >> $GITHUB_ENV
-        exit 1
 
     - name: Find existing comment
       if: env.issues_detected == 'true'
@@ -121,3 +119,9 @@ runs:
         body-path: csharpier-summary.md
         edit-mode: replace
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
+
+    - name: Fail if formatting issues are found
+      if: env.issues_detected == 'true'
+      shell: bash
+      run: exit 1
+
