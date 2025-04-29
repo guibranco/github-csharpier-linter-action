@@ -95,7 +95,7 @@ runs:
             current_line="1"
           elif [[ "$line" =~ Expected:\ Around\ Line\ ([0-9]+) ]]; then
             current_line="${BASH_REMATCH[1]}"
-            echo "::warning file=$current_file,line=$current_line::File is not formatted correctly. Run 'dotnet csharpier .' to fix."
+            echo "::error file=$current_file,line=$current_line::File is not formatted correctly. Run 'dotnet csharpier .' to fix."
             echo "| $current_file | $current_line |" >> "$summary_file"
           fi
         done <<< "$output"
