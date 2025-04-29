@@ -28,9 +28,7 @@ You can use this action in your workflows by referencing it as a reusable workfl
 ```yaml
 jobs:
   csharpier-linter:
-    uses: guibranco/github-csharpier-linter-action@v1
-    with:
-      # Add any inputs if needed in the future
+    uses: guibranco/github-csharpier-linter-action@v1.0.0
 ```
 
 ## ⚡ Requirements
@@ -53,12 +51,11 @@ name: Linter check
 
 on:
   pull_request:
-  workflow_dispatch:
 
 jobs:
   linter-check:
     runs-on: ubuntu-latest
-    uses: guibranco/github-csharpier-linter-action@v1
+    uses: guibranco/github-csharpier-linter-action@v1.0.0
 ```
 
 ## 🔧 How It Works
