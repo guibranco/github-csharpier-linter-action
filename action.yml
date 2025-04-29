@@ -72,7 +72,7 @@ runs:
       id: csharpier
       shell: bash
       run: |
-        output=$(dotnet csharpier . --check || true)
+        output=$(dotnet csharpier check . || true)
         echo "$output" > csharpier-output.txt
 
         echo "$output"
