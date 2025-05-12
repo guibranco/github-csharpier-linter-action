@@ -29,6 +29,8 @@ You can use this action in your workflows by referencing it as a reusable workfl
 jobs:
   linter-check:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: CSharpier Linter
         uses: guibranco/github-csharpier-linter-action@v1.0.5
@@ -59,6 +61,8 @@ on:
 jobs:
   linter-check:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: CSharpier Linter
         uses: guibranco/github-csharpier-linter-action@v1.0.5
