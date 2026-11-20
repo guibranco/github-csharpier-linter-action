@@ -20,6 +20,29 @@ A **GitHub Action** to automatically check and enforce **C# code formatting** us
 - **Job summary**: Uploads a neat, easy-to-read summary in the GitHub Actions interface.
 - **Inline annotations**: Adds warnings in the code where formatting is incorrect.
 - **PR comments**: Posts a comment on the pull request with the list of issues detected.
+- **Target framework validation**: Finds every `<TargetFramework>` / `<TargetFrameworks>` in `*.csproj`, `*.fsproj`, `*.vbproj` and `Directory.Build.props` files and flags frameworks that are out of support. .NET / .NET Core support status comes from Microsoft's [official release metadata](https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json), so newly retired versions are picked up automatically. .NET Framework 4.6.2+ and 3.5 SP1 and all `netstandard` targets are treated as supported.
+
+## ⚙️ Inputs
+
+| Input | Default | Description |
+|:------|:-------:|:------------|
+| `frameworks-validation` | `error` | `error` fails the check when a project targets an out-of-support framework, `warning` only annotates, `off` disables the validation. |
+| `frameworks-ignore` | `''` | Comma-separated target framework monikers to skip, for example `net8.0, net48`. |
+
+```yaml
+      - name: CSharpier Linter
+        uses: guibranco/github-csharpier-linter-action@latest
+        with:
+          frameworks-validation: warning
+          frameworks-ignore: net8.0
+```
+
+## 📤 Action outputs
+
+| Output | Description |
+|:-------|:------------|
+| `frameworks` | Comma-separated list of target frameworks found in the repository. |
+| `unsupported-frameworks` | Comma-separated list of target frameworks that are out of support. |
 
 ## 🧩 Usage
 
@@ -72,7 +95,8 @@ jobs:
 
 1. **Setup .NET**: Ensures that .NET SDK is installed.
 2. **Run CSharpier**: Runs `dotnet csharpier check .` and checks for any formatting issues.
-3. **Create Annotations and PR Comments**: If issues are found, the action creates inline annotations, a job summary, and a comment on the PR.
+3. **Validate target frameworks**: Checks every declared target framework against the .NET support lifecycle.
+4. **Create Annotations and PR Comments**: If issues are found, the action creates inline annotations, a job summary, and a comment on the PR.
 
 ## 🛠 Development
 

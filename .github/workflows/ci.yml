@@ -30,9 +30,46 @@ jobs:
       - name: Run CSharpier Linter Action (real CSharpier installed)
         uses: ./
 
+  test-frameworks-validation:
+    name: Target frameworks validation test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run validator against sample projects
+        shell: bash
+        run: |
+          set -euo pipefail
+          script="$GITHUB_WORKSPACE/scripts/validate-frameworks.py"
+          work=$(mktemp -d)
+          mkdir -p "$work/Supported" "$work/Legacy" "$work/Legacy/bin"
+          echo '<Project><PropertyGroup><TargetFrameworks>netstandard2.0;net10.0;net48</TargetFrameworks></PropertyGroup></Project>' > "$work/Supported/Supported.csproj"
+          echo '<Project><PropertyGroup><TargetFramework>netcoreapp3.1</TargetFramework></PropertyGroup></Project>' > "$work/Legacy/Legacy.csproj"
+          echo '<Project><PropertyGroup><TargetFramework>net5.0</TargetFramework></PropertyGroup></Project>' > "$work/Legacy/bin/Skipped.csproj"
+          cd "$work"
+
+          run() { : > out; : > env; GITHUB_OUTPUT=out GITHUB_ENV=env GITHUB_STEP_SUMMARY=/dev/null python3 "$script" > /dev/null; }
+
+          FRAMEWORKS_MODE=error run
+          grep -qx 'framework_issues_detected=true' env
+          grep -qx 'unsupported-frameworks=netcoreapp3.1' out
+
+          FRAMEWORKS_MODE=warning run
+          grep -qx 'framework_issues_detected=false' env
+
+          FRAMEWORKS_MODE=error FRAMEWORKS_IGNORE='netcoreapp3.1' run
+          grep -qx 'framework_issues_detected=false' env
+
+          FRAMEWORKS_MODE=off run
+          grep -qx 'framework_issues_detected=false' env
+
+          echo "✅ Target framework validation behaves as expected."
+
   create-release:
     name: Create release
-    needs: test-action
+    needs: [test-action, test-frameworks-validation]
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     steps:

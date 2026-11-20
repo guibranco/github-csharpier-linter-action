@@ -3,7 +3,22 @@ description: 'A reusable GitHub Action to check C# code formatting using CSharpi
 branding:
   icon: "check"
   color: "green"
-inputs: {}
+inputs:
+  frameworks-validation:
+    description: 'How to treat projects that target an out-of-support .NET framework: "error" (fail the check), "warning" (annotate only) or "off".'
+    required: false
+    default: 'error'
+  frameworks-ignore:
+    description: 'Comma-separated target framework monikers to skip during validation (for example "net8.0, net48").'
+    required: false
+    default: ''
+outputs:
+  frameworks:
+    description: 'Comma-separated list of target frameworks found in the repository.'
+    value: ${{ steps.frameworks.outputs.frameworks }}
+  unsupported-frameworks:
+    description: 'Comma-separated list of target frameworks that are out of support.'
+    value: ${{ steps.frameworks.outputs.unsupported-frameworks }}
 runs:
   using: 'composite'
   steps:
@@ -102,6 +117,14 @@ runs:
         cat "$summary_file" >> "$GITHUB_STEP_SUMMARY"
         echo "issues_detected=true" >> $GITHUB_ENV
 
+    - name: Validate .NET target frameworks
+      id: frameworks
+      shell: bash
+      env:
+        FRAMEWORKS_MODE: ${{ inputs.frameworks-validation }}
+        FRAMEWORKS_IGNORE: ${{ inputs.frameworks-ignore }}
+      run: python3 "${{ github.action_path }}/scripts/validate-frameworks.py"
+
     - name: Find existing comment
       if: env.issues_detected == 'true'
       id: find-comment
@@ -120,8 +143,33 @@ runs:
         edit-mode: replace
         comment-id: ${{ steps.find-comment.outputs.comment-id }}
 
+    - name: Find existing frameworks comment
+      if: env.framework_issues_detected == 'true' && github.event.pull_request.number
+      id: find-frameworks-comment
+      uses: peter-evans/find-comment@v4
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        comment-author: github-actions[bot]
+        body-includes: 🧱 .NET target framework issues detected
+
+    - name: Create or update frameworks PR comment
+      if: env.framework_issues_detected == 'true' && github.event.pull_request.number
+      uses: peter-evans/create-or-update-comment@v5
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-path: frameworks-summary.md
+        edit-mode: replace
+        comment-id: ${{ steps.find-frameworks-comment.outputs.comment-id }}
+
     - name: Fail if formatting issues are found
       if: env.issues_detected == 'true'
       shell: bash
       run: exit 1
+
+    - name: Fail if unsupported target frameworks are found
+      if: env.framework_issues_detected == 'true'
+      shell: bash
+      run: |
+        echo "❌ One or more projects target an out-of-support .NET framework."
+        exit 1
 
