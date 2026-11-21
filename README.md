@@ -51,7 +51,7 @@ You can use this action in your workflows by referencing it as a reusable workfl
 ```yaml
 jobs:
   linter-check:
-    runs-on: ubuntu-1.1.1
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
@@ -83,7 +83,7 @@ on:
 
 jobs:
   linter-check:
-    runs-on: ubuntu-1.1.1
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
