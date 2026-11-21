@@ -31,7 +31,7 @@ A **GitHub Action** to automatically check and enforce **C# code formatting** us
 
 ```yaml
       - name: CSharpier Linter
-        uses: guibranco/github-csharpier-linter-action@latest
+        uses: guibranco/github-csharpier-linter-action@1.1.1
         with:
           frameworks-validation: warning
           frameworks-ignore: net8.0
